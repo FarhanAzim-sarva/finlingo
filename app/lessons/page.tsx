@@ -1,48 +1,46 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const tracks = [
   {
-    id: "ib-foundations",
-    title: "IB Foundations",
-    description:
-      "Understand what investment banks do, how they make money, and how they're structured. The essential primer before anything else.",
+    slug: "investment-banking",
+    title: "Investment Banking",
+    description: "M&A, IPOs, debt issuance, and the deal lifecycle.",
+    status: "live" as const,
     lessons: 8,
-    icon: "I",
-    firstLesson: "/lessons/ib-foundations/what-is-investment-banking",
-    tags: ["Bulge Bracket", "Coverage Groups", "Deal Flow"],
+    href: "/lessons/ib-foundations/what-is-investment-banking",
   },
   {
-    id: "ma",
-    title: "Mergers & Acquisitions",
-    description:
-      "Walk through a live M&A deal from mandate to close — strategic rationale, due diligence, deal structuring, and synergy modeling.",
-    lessons: 10,
-    icon: "M&A",
-    firstLesson: "#",
-    tags: ["Deal Structure", "Due Diligence", "Synergies"],
-    locked: true,
+    slug: "equity-research",
+    title: "Equity Research",
+    description: "Buy-side and sell-side analysis, models, and stock pitches.",
+    status: "coming-soon" as const,
   },
   {
-    id: "valuation",
-    title: "Valuation",
-    description:
-      "Master the three valuation methodologies every analyst must know: DCF, comparable companies, and precedent transactions.",
-    lessons: 9,
-    icon: "V",
-    firstLesson: "#",
-    tags: ["DCF", "Comps", "Precedents"],
-    locked: true,
+    slug: "sales-trading",
+    title: "Sales & Trading",
+    description: "Markets, derivatives, and the trading floor playbook.",
+    status: "coming-soon" as const,
   },
   {
-    id: "financial-modeling",
-    title: "Financial Modeling",
-    description:
-      "Build three-statement models and LBO models from scratch. Learn the mechanics of how Excel models are used in live deals.",
-    lessons: 12,
-    icon: "FM",
-    firstLesson: "#",
-    tags: ["3-Statement", "LBO", "Sensitivity Analysis"],
-    locked: true,
+    slug: "private-equity-vc",
+    title: "Private Equity & VC",
+    description: "LBOs, growth equity, term sheets, and investor mindset.",
+    status: "coming-soon" as const,
+  },
+  {
+    slug: "corporate-development",
+    title: "Corporate Development",
+    description: "Strategic M&A, integration, and CorpDev career paths.",
+    status: "coming-soon" as const,
+  },
+  {
+    slug: "financial-planning-analysis",
+    title: "Financial Planning & Analysis",
+    description: "Budgeting, forecasting, and FP&A in modern companies.",
+    status: "coming-soon" as const,
   },
 ];
 
@@ -59,8 +57,8 @@ export default function LessonsPage() {
             Learning Tracks
           </h1>
           <p className="text-ivory/60 text-base max-w-xl">
-            Four tracks designed to take you from zero to analyst-ready. Start
-            with IB Foundations and work your way through.
+            Six tracks designed to take you from zero to analyst-ready. Start
+            with Investment Banking and build your foundation.
           </p>
         </div>
       </section>
@@ -70,68 +68,61 @@ export default function LessonsPage() {
       {/* Tracks */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {tracks.map((track) => (
-            <div
-              key={track.id}
-              className={`border border-gold/20 bg-white p-7 flex flex-col gap-5 ${
-                track.locked ? "opacity-70" : "hover:border-gold/50 transition-colors"
-              }`}
+          {tracks.map((track, i) => (
+            <motion.div
+              key={track.slug}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              whileHover={{
+                y: -4,
+                boxShadow: "0 0 0 1.5px #C9A961, 0 8px 32px 0 rgba(201,169,97,0.18)",
+                transition: { duration: 0.22 },
+              }}
+              className="border border-gold/20 bg-white p-7 flex flex-col gap-5 rounded-sm"
             >
-              <div className="flex items-start justify-between">
-                <span className="bg-navy text-gold text-xs font-bold px-3 py-1.5 font-serif">
-                  {track.icon}
-                </span>
-                {track.locked && (
-                  <span className="text-xs text-muted border border-muted/30 px-2 py-0.5">
+              {/* Status row */}
+              <div className="flex items-center justify-between">
+                {track.status === "live" ? (
+                  <span className="text-xs text-gold font-semibold uppercase tracking-widest">
+                    {track.lessons} lessons
+                  </span>
+                ) : (
+                  <span className="text-xs font-semibold px-2.5 py-0.5 border border-gold/40 text-gold/70 uppercase tracking-widest">
                     Coming Soon
                   </span>
                 )}
               </div>
 
+              {/* Title + Description */}
               <div>
                 <h2 className="font-serif text-xl font-bold text-charcoal mb-2">
                   {track.title}
                 </h2>
-                <p className="text-muted text-sm leading-relaxed">
+                <p className="text-muted text-sm leading-relaxed font-sans">
                   {track.description}
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                {track.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs text-navy/70 border border-navy/20 px-2 py-0.5"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex items-center justify-between pt-2 border-t border-gold/10 mt-auto">
-                <span className="text-xs text-muted">
-                  {track.lessons} lessons
-                </span>
-                {track.locked ? (
-                  <span className="text-xs text-muted">Locked</span>
-                ) : (
+              {/* CTA */}
+              <div className="mt-auto pt-4 border-t border-gold/10">
+                {track.status === "live" ? (
                   <Link
-                    href={track.firstLesson}
-                    className="text-sm font-semibold text-navy border-b border-navy/30 hover:border-gold hover:text-gold transition-colors"
+                    href={track.href!}
+                    className="inline-block text-sm font-semibold text-navy border-b border-navy/30 hover:border-gold hover:text-gold transition-colors duration-200"
                   >
                     Begin Track →
                   </Link>
+                ) : (
+                  <Link
+                    href={`/waitlist?track=${track.slug}`}
+                    className="inline-block text-sm font-semibold text-ivory bg-navy px-4 py-2 hover:bg-navy-light transition-colors duration-200"
+                  >
+                    Notify Me
+                  </Link>
                 )}
               </div>
-
-              {/* Progress placeholder */}
-              <div className="h-1 bg-ivory-dark w-full">
-                <div
-                  className="h-1 bg-gold"
-                  style={{ width: track.locked ? "0%" : "12%" }}
-                />
-              </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
